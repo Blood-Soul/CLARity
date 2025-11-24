@@ -22,7 +22,7 @@ import json
 import argparse
 
 
-allow_no_answer = True  # 是否允许没有正确答案的题目
+allow_no_answer = False  # 是否允许没有正确答案的题目
 system_msg = (
     "A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think> <answer> answer here </answer>.")
 
@@ -57,14 +57,11 @@ def medqa_usmle_prompt_template(entry, system_prompt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--local_dir', default='output/parquet/med', type=str)
+
+    parser.add_argument('--input_data', default='data/original_data/med/dev.jsonl', type=str)
+    parser.add_argument('--output_dir', default='data/original_data/med/prepared_parquet', type=str)
 
     args = parser.parse_args()
-
-    with open('train_random_bs=5_mix_with_original_data_mix_by_difficulty.json', 'r') as f:
-        # train_dataset = [json.loads(line) for line in f]
-        train_dataset = json.load(f)
-
 
     def process_fn(example, idx):
         if 'question' not in example:
@@ -92,18 +89,26 @@ if __name__ == '__main__':
     def process_dataset(dataset):
         data = []
         for idx, example in enumerate(dataset):
-            # if example['answer'] == []:
-                # print(f"Skipping example {idx} with empty answer")
-                # print(example)
-                # continue
+            if example['answer'] == []:
+                print(f"Skipping example {idx} with empty answer")
+                print(example)
+                continue
             data.append(process_fn(example, idx))
         return data
 
     ## process and save the dataset to parquet
+    if not os.path.exists(args.input_data):
+        raise FileNotFoundError(f'{args.input_data} not exists !')
+    else:
+        with open(args.input_data, 'r') as f:
+            train_dataset = [json.loads(line) for line in f]
+            #train_dataset = json.load(f)
+
     if not os.path.exists(args.local_dir):
         os.makedirs(args.local_dir)
+        
     train_data = process_dataset(train_dataset)
     check_no_answer(train_data)
     print(f"len:{len(train_data)}")
     train_data = datasets.Dataset.from_list(train_data)
-    train_data.to_parquet(f'{args.local_dir}/data.parquet')
+    train_data.to_parquet(f'{args.local_dir}/dev_prepared.parquet')
