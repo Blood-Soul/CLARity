@@ -6,7 +6,7 @@ from datasets import Dataset
 def cal_acc(predict, ground_truth):
     match = re.search(r'\{[\u4e00-\u9fffA-Za-z,\s]*\}[^{]*$', predict)
 
-    if match is None:
+    if not match:
         return 0
     
     answer = set(re.findall(r'[A-Z]', match.group()))
@@ -33,7 +33,7 @@ if __name__ == '__main__':
         ground_truth = example["reward_model"]["ground_truth"]
         predict = example["response"]["answer"]
 
-        total += cal_acc(predict, ground_truth)
+        correct += cal_acc(predict, ground_truth)
         total += 1
 
     print(f'ACC: {correct/total}')
