@@ -22,11 +22,11 @@ if __name__ == '__main__':
 
     def call_llm(prompt):
         try:
-            resp = client.chat.completion.create(
+            resp = client.chat.completions.create(
                 model=args.model_name,
                 messages=prompt
             )
-            answer = resp.choices[0].message["content"]
+            answer = resp.choices[0].message.content
         except Exception as e:
             print(f'Error: {e}')
             answer = "error"
@@ -40,6 +40,7 @@ if __name__ == '__main__':
             "model_name": args.model_name,
             "answer": answer
         }
+        return example
 
     if not os.path.exists(args.input_data):
         raise FileNotFoundError(f'{args.input_data} not exists !')
