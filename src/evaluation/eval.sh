@@ -1,0 +1,1 @@
+python src\evaluation\eval.py --input_data data/infer_answer/dev_inferenced.parquet
