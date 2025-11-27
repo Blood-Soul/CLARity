@@ -31,6 +31,10 @@ This repository contains the official implementation of the paper "**CLARity: Re
   * `stage-1`: Code for the reward function in the stage-1 (refine) phase.
   * `stage-2`: Code for the reward function and reward manager in the stage-2 (monitor) phase.
 
+## pipeline
+
+`bash ./src/data_preparation/prepare_data.sh`
+
 ## 🤝 Citation
 
 If you use this code or find our work helpful, please cite our paper:

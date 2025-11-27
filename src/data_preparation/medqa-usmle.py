@@ -81,7 +81,6 @@ if __name__ == '__main__':
             },
             "extra_info": {
                 'idx': idx,
-                'original_id': example['id'],
             }
         }
         return data
@@ -104,11 +103,11 @@ if __name__ == '__main__':
             train_dataset = [json.loads(line) for line in f]
             #train_dataset = json.load(f)
 
-    if not os.path.exists(args.local_dir):
-        os.makedirs(args.local_dir)
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
         
     train_data = process_dataset(train_dataset)
     check_no_answer(train_data)
     print(f"len:{len(train_data)}")
     train_data = datasets.Dataset.from_list(train_data)
-    train_data.to_parquet(f'{args.local_dir}/dev_prepared.parquet')
+    train_data.to_parquet(f'{args.output_dir}/dev_prepared.parquet')
