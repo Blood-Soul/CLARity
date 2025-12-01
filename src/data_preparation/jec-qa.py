@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--input_data', default='data/original_data/jec/JEC_1_multi_choice_test.json', type=str)
     parser.add_argument('--output_dir', default='data/original_data/jec/prepared_parquet', type=str)
+    parser.add_argument('--output_file_name', default='prepared_jec_data', type=str)
 
     args = parser.parse_args()
 
@@ -101,4 +102,4 @@ if __name__ == '__main__':
     check_no_answer(train_data)
     print(f"len:{len(train_data)}")
     train_data = datasets.Dataset.from_list(train_data)
-    train_data.to_parquet(f'{args.output_dir}/JEC_1_multi_choice_test_prepared.parquet')
+    train_data.to_parquet(f'{args.output_dir}/{args.output_file_name}.parquet')
